@@ -1,26 +1,26 @@
+# 🌐✨ LinkGrid Agent — Conversational AI SDK for BitNet
 
-# 🚀 LinkGrid Agent
-
-[![PyPI Version](https://img.shields.io/pypi/v/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)  
-[![Python Versions](https://img.shields.io/pypi/pyversions/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)  
+[![PyPI Version](https://img.shields.io/pypi/v/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A modern Python client for the BitNet API with customizable AI personality, response length, and creativity settings. Perfect for integrating conversational AI into your applications.
+> A modern, lightweight Python client for BitNet's conversational AI.  
+> Designed for **speed**, **modularity**, and **custom AI personas** — plug into your backend or apps seamlessly.
 
 ---
 
-## Features ✨
+## ⚡️ Key Features
 
-- 💬 Natural language conversation interface  
-- 🎨 Customizable AI personality and behavior  
-- ⚡️ Asynchronous API for high performance  
-- 🔧 Simple yet powerful configuration  
-- 🌐 Automatic session management  
-- 🧠 Supports multiple concurrent conversations  
+- 💬 Natural language chat API with async support  
+- 🧠 Define unique AI personas with custom system prompts  
+- 🎯 Fine-grained control over temperature, token limits, and creativity  
+- 🧵 Persistent conversation state (threaded dialog)  
+- 🔄 Supports parallel conversations with isolated agents  
+- 🧩 Minimal setup with powerful config-based architecture  
 
 ---
 
-## Installation 📦
+## 📦 Installation
 
 ```bash
 pip install linkgrid-agent
@@ -28,9 +28,9 @@ pip install linkgrid-agent
 
 ---
 
-## Quick Start 🚀
+## 🚀 Get Started
 
-### Basic Conversation
+### 🔹 One-Line Chat
 
 ```python
 from linkgrid_agent import chat
@@ -43,25 +43,23 @@ import asyncio
 asyncio.run(main())
 ```
 
-**Output:**
-
+✅ **Output:**
 ```
 🤖 The capital of France is Paris.
 ```
 
 ---
 
-### Custom Personality
+### 🎭 Custom AI Persona
 
 ```python
 from linkgrid_agent import LinkGridAgent
 
 async def main():
-    # Create pirate-themed assistant
     config = LinkGridAgent.Config()
     config.system_prompt = "You are a pirate captain. Answer like a pirate!"
-    config.temperature = 0.9  # More creative responses
-    
+    config.temperature = 0.9
+
     async with LinkGridAgent(config) as agent:
         response = await agent.chat("Where can I find treasure?")
         print(f"🏴‍☠️ {response}")
@@ -70,39 +68,35 @@ import asyncio
 asyncio.run(main())
 ```
 
-**Output:**
-
+🦜 **Output:**
 ```
 🏴‍☠️ Arr matey! Seek the treasure on Skull Island, where X marks the spot!
 ```
 
 ---
 
-## Advanced Usage 🧠
+## 🔬 Advanced Use Cases
 
-### Multiple Conversations
+### 🧑‍🔬 Multi-Persona AI Agents
 
 ```python
 from linkgrid_agent import LinkGridAgent
 
 async def main():
-    # Create different AI personalities
-    poet_config = LinkGridAgent.Config()
-    poet_config.system_prompt = "You are a romantic poet"
-    poet_config.max_tokens = 200
-    
-    scientist_config = LinkGridAgent.Config()
-    scientist_config.system_prompt = "You are a quantum physicist"
-    scientist_config.temperature = 0.3
-    
-    async with LinkGridAgent(poet_config) as poet,                LinkGridAgent(scientist_config) as scientist:
-        
-        # Get responses from different AI personas
-        poem = await poet.chat("Write a short poem about the stars")
-        explanation = await scientist.chat("Explain quantum entanglement")
-        
+    poet_cfg = LinkGridAgent.Config()
+    poet_cfg.system_prompt = "You are a romantic poet"
+    poet_cfg.max_tokens = 200
+
+    scientist_cfg = LinkGridAgent.Config()
+    scientist_cfg.system_prompt = "You are a quantum physicist"
+    scientist_cfg.temperature = 0.3
+
+    async with LinkGridAgent(poet_cfg) as poet, LinkGridAgent(scientist_cfg) as scientist:
+        poem = await poet.chat("Write a poem about the stars")
+        expl = await scientist.chat("Explain quantum entanglement")
+
         print(f"📜 Poet:\n{poem}\n")
-        print(f"🔬 Scientist:\n{explanation}")
+        print(f"🔬 Scientist:\n{expl}")
 
 import asyncio
 asyncio.run(main())
@@ -110,7 +104,7 @@ asyncio.run(main())
 
 ---
 
-### Conversation History
+### 🗂️ Stateful Conversation Threads
 
 ```python
 from linkgrid_agent import LinkGridAgent
@@ -118,15 +112,14 @@ from linkgrid_agent import LinkGridAgent
 async def main():
     config = LinkGridAgent.Config()
     config.system_prompt = "You're a helpful travel assistant"
-    
+
     async with LinkGridAgent(config) as agent:
-        # Conversation with context
-        response1 = await agent.chat("I'm planning a trip to Japan")
-        response2 = await agent.chat("What should I see in Tokyo?")
-        response3 = await agent.chat("How about traditional experiences?")
-        
-        print(f"🗼 Tokyo suggestions: {response2}")
-        print(f"🎎 Traditional experiences: {response3}")
+        await agent.chat("I'm planning a trip to Japan")
+        tokyo = await agent.chat("What should I see in Tokyo?")
+        traditions = await agent.chat("How about traditional experiences?")
+
+        print(f"🗼 Tokyo Tips: {tokyo}")
+        print(f"🎎 Traditions: {traditions}")
 
 import asyncio
 asyncio.run(main())
@@ -134,18 +127,18 @@ asyncio.run(main())
 
 ---
 
-## Configuration Options ⚙️
+## ⚙️ Configuration
 
-Customize your AI assistant with these parameters:
+Customize your agent behavior using simple parameters.
 
-| Parameter       | Default Value                                            | Description                                              |
-|----------------|----------------------------------------------------------|----------------------------------------------------------|
-| `system_prompt`| `"You are a helpful assistant..."`                       | Defines the AI's personality and role                    |
-| `max_tokens`   | `150`                                                    | Response length limit (1–4000 tokens)                   |
-| `temperature`  | `0.7`                                                    | Creativity level (0.0 = factual, 1.0 = creative)         |
-| `api_url`      | `"https://bitnet-demo.azurewebsites.net/completion"`    | BitNet API endpoint                                      |
+| Parameter       | Default Value                                              | Description                                 |
+|----------------|------------------------------------------------------------|---------------------------------------------|
+| `system_prompt`| `"You are a helpful assistant..."`                         | Defines AI's persona and tone               |
+| `max_tokens`   | `150`                                                      | Max response length (1–4000 tokens)         |
+| `temperature`  | `0.7`                                                      | Creativity scale: 0 = precise, 1 = creative |
+| `api_url`      | `"https://bitnet-demo.azurewebsites.net/completion"`      | BitNet API endpoint                         |
 
-**Example Configuration:**
+🔧 **Example Setup:**
 
 ```python
 config = LinkGridAgent.Config()
@@ -156,33 +149,50 @@ config.temperature = 0.5
 
 ---
 
-## Error Handling ⚠️
+## 🛡️ Error Handling
 
-The package raises these exceptions:
-
-- `ConnectionError`: Network-related issues  
-- `RuntimeError`: API errors (non-2xx responses)  
+Gracefully manage edge cases and errors:
 
 ```python
 from linkgrid_agent import chat
 
 try:
-    response = await chat("What is AI?")
+    response = await chat("Define machine learning")
 except ConnectionError as e:
-    print(f"🌐 Network error: {e}")
+    print(f"🌐 Network issue: {e}")
 except RuntimeError as e:
     print(f"🤖 API error: {e}")
 ```
 
----
+### Exceptions
 
-## Requirements 📋
-
-- Python 3.7+  
-- `httpx` - Modern HTTP client
+- `ConnectionError`: API unreachable or timeout  
+- `RuntimeError`: BitNet returned an error response  
 
 ---
 
-## License 📄
+## 📋 Requirements
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- Python 3.7+
+- [`httpx`](https://www.python-httpx.org/) – Async HTTP client
+
+---
+
+## 📄 License
+
+Released under the [MIT License](LICENSE).  
+Feel free to fork, improve, and share!
+
+---
+
+## 🤝 Contribution
+
+PRs are welcome. Please make sure to follow the existing code style.  
+Open issues to report bugs or request features.
+
+---
+
+## 💡 Inspiration
+
+> "The future is already here — it's just not evenly distributed."  
+> — *William Gibson*
