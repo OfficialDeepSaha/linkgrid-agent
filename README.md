@@ -1,4 +1,4 @@
-# 🌐✨ LinkGrid Agent — Conversational AI SDK for BitNet
+# 🌐✨ LinkGrid Agent — Conversational AI SDK
 
 [![PyPI Version](https://img.shields.io/pypi/v/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/linkgrid-agent.svg)](https://pypi.org/project/linkgrid-agent/)
