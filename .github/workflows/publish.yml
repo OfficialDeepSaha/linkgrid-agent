@@ -5,10 +5,15 @@ on:
     types: [published]
   workflow_dispatch:
 
+# Add permissions block here
+permissions:
+  id-token: write  # Required for OIDC token exchange
+  contents: read   # Required to checkout code
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    environment: pypi  # Must match environment name in PyPI config
+    environment: pypi
 
     steps:
     - name: Checkout repository
@@ -33,7 +38,7 @@ jobs:
         pip install twine
         twine check dist/*
 
+    # Remove trusted-publisher input and use OIDC auth
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        trusted-publisher: true  # Enable OIDC auth
+      # No need for trusted-publisher flag when permissions are set
