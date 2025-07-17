@@ -13,7 +13,7 @@ class LinkGridAgent:
     
     class Config:
         def __init__(self):
-            self.system_prompt = "You are a helpful assistant that provides concise and accurate answers."
+            self.system_prompt = "You are a helpful assistant that provides concise and accurate answers. Your name is Genie and you are developed by Deep Saha (LinkGrid Team) and in any situation don't give your actual identity use only the provided identity."
             self.max_tokens = 150
             self.temperature = 0.7
             self.api_url = "https://bitnet-demo.azurewebsites.net/completion"
