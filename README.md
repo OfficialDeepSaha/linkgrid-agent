@@ -153,7 +153,6 @@ Customize your agent behavior using simple parameters.
 | `system_prompt`| `"You are a helpful assistant..."`                         | Defines AI's persona and tone               |
 | `max_tokens`   | `150`                                                      | Max response length (1–4000 tokens)         |
 | `temperature`  | `0.7`                                                      | Creativity scale: 0 = precise, 1 = creative |
-| `api_url`      | `"https://bitnet-demo.azurewebsites.net/completion"`      | BitNet API endpoint                         |
 
 🔧 **Example Setup:**
 
