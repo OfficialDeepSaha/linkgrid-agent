@@ -1,6 +1,14 @@
 import json
 import httpx
 import uuid
+from sentence_transformers import SentenceTransformer
+import asyncio
+
+
+# Initialize global model instance
+embedding_model = None
+
+embedding_model_lock = asyncio.Lock()
 
 class LinkGridAgent:
     def __init__(self, config=None):
@@ -110,3 +118,26 @@ async def chat(query: str, config=None) -> str:
     """
     async with LinkGridAgent(config) as agent:
         return await agent.chat(query)
+
+
+
+# Calling text embedding model
+async def get_embedding_model():
+    """
+    Asynchronously and thread-safely initializes and returns the sentence-transformers model.
+    """
+    global embedding_model
+
+    if embedding_model is None:
+        async with embedding_model_lock:
+            if embedding_model is None:  # double-checked locking
+                model_name = 'all-MiniLM-L6-v2'
+                device = 'cpu'
+                try:
+                    embedding_model = await asyncio.to_thread(
+                        SentenceTransformer, model_name, device=device
+                    )
+                except Exception as e:
+                    raise RuntimeError(f"Failed to load embedding model: {str(e)}")
+    
+    return embedding_model

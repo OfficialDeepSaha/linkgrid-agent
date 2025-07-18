@@ -5,10 +5,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="linkgrid-agent",
-    version="0.1.3",
+    version="0.1.4",
     packages=find_packages(),
     install_requires=[
-        "httpx"
+        "httpx",
+        "sentence-transformers",
+        "torch"
     ],
     author="Deep Saha",
     author_email="hiremeasadeveloper@gmail.com",
@@ -21,5 +23,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.9",
 )

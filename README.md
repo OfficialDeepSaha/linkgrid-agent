@@ -173,7 +173,7 @@ except RuntimeError as e:
 
 ## 📋 Requirements
 
-- Python 3.7+
+- Python 3.9+
 - [`httpx`](https://www.python-httpx.org/) – Async HTTP client
 
 ---
