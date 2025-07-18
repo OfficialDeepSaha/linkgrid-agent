@@ -127,6 +127,23 @@ asyncio.run(main())
 
 ---
 
+### 🧠 Embedding Model
+
+```python
+from linkgrid_agent.agent import get_embedding_model
+import asyncio
+
+async def main():
+    model = await get_embedding_model()
+    sentences = ["Hello world", "Another sentence"]
+    embeddings = model.encode(sentences)
+    print(embeddings)
+
+asyncio.run(main())
+```
+
+---
+
 ## ⚙️ Configuration
 
 Customize your agent behavior using simple parameters.
@@ -174,7 +191,9 @@ except RuntimeError as e:
 ## 📋 Requirements
 
 - Python 3.9+
-- [`httpx`](https://www.python-httpx.org/) – Async HTTP client
+- `httpx` – Async HTTP client
+- `sentence-transformers` – Text embedding models
+- `torch` – PyTorch backend for sentence-transformers
 
 ---
 
