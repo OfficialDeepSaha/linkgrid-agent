@@ -3,10 +3,13 @@ import httpx
 import uuid
 from sentence_transformers import SentenceTransformer
 import asyncio
+from typing import Optional
+import torch
+
 
 
 # Initialize global model instance
-embedding_model = None
+embedding_model: Optional[SentenceTransformer] = None
 
 embedding_model_lock = asyncio.Lock()
 
@@ -35,8 +38,9 @@ class LinkGridAgent:
     
     async def __aenter__(self):
         self.client = httpx.AsyncClient(
-            timeout=httpx.Timeout(25.0, connect=10.0),
-            http2=True
+            timeout=httpx.Timeout(15.0, connect=5.0, read=10.0),
+            http2=True,
+            limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
         )
         return self
         
@@ -78,6 +82,9 @@ class LinkGridAgent:
         full_content = []
 
         try:
+            # Use a buffer size for more efficient streaming
+            buffer_size = 4096  # 4KB chunks for more efficient processing
+            
             async with self.client.stream(
                 "POST",
                 self.config.api_url,
@@ -86,16 +93,27 @@ class LinkGridAgent:
             ) as response:
                 response.raise_for_status()
                 
-                async for line in response.aiter_lines():
-                    if line.startswith("data: "):
-                        try:
-                            data = json.loads(line[6:])
-                            if data.get("content") == "[DONE]":
-                                break
-                            if content := data.get("content"):
-                                full_content.append(content)
-                        except json.JSONDecodeError:
-                            continue
+                # Process response in larger chunks for efficiency
+                buffer = ""
+                async for chunk in response.aiter_raw(buffer_size):
+                    buffer += chunk.decode('utf-8')
+                    lines = buffer.split('\n')
+                    
+                    # Process complete lines
+                    for i in range(len(lines) - 1):
+                        line = lines[i]
+                        if line.startswith("data: "):
+                            try:
+                                data = json.loads(line[6:])
+                                if data.get("content") == "[DONE]":
+                                    return "".join(full_content).strip()
+                                if content := data.get("content"):
+                                    full_content.append(content)
+                            except json.JSONDecodeError:
+                                continue
+                    
+                    # Keep the last potentially incomplete line
+                    buffer = lines[-1]
 
         except httpx.RequestError as e:
             raise ConnectionError(f"Network error: {str(e)}")
@@ -122,22 +140,32 @@ async def chat(query: str, config=None) -> str:
 
 
 # Calling text embedding model
-async def get_embedding_model():
+async def get_embedding_model() -> SentenceTransformer:
     """
-    Asynchronously and thread-safely initializes and returns the sentence-transformers model.
+    Lazily and asynchronously loads the SentenceTransformer model on CPU.
+    Thread-safe and non-blocking using asyncio.to_thread.
     """
     global embedding_model
 
-    if embedding_model is None:
-        async with embedding_model_lock:
-            if embedding_model is None:  # double-checked locking
-                model_name = 'all-MiniLM-L6-v2'
-                device = 'cpu'
-                try:
-                    embedding_model = await asyncio.to_thread(
-                        SentenceTransformer, model_name, device=device
-                    )
-                except Exception as e:
-                    raise RuntimeError(f"Failed to load embedding model: {str(e)}")
-    
+    if embedding_model is not None:
+        return embedding_model
+
+    async with embedding_model_lock:
+        if embedding_model is not None:
+            return embedding_model
+
+        try:
+            model_name = "all-MiniLM-L6-v2"
+
+            # 🧠 Set performance-efficient threading BEFORE model load
+            torch.set_num_threads(torch.get_num_threads())  # or set to fixed core count
+            torch.set_num_interop_threads(1)
+
+            # 🚀 Load the model asynchronously in background thread
+            embedding_model = await asyncio.to_thread(SentenceTransformer, model_name)
+            embedding_model.eval()
+
+        except Exception as e:
+            raise RuntimeError(f"[Embedding Load Failed] {str(e)}")
+
     return embedding_model
