@@ -127,20 +127,33 @@ asyncio.run(main())
 
 ---
 
-### 🧠 Embedding Model
+---
+
+### 🚀 Performance Optimizations
 
 ```python
-from linkgrid_agent.agent import get_embedding_model
-import asyncio
+from linkgrid_agent import chat, cleanup_resources
 
 async def main():
-    model = await get_embedding_model()
-    sentences = ["Hello world", "Another sentence"]
-    embeddings = model.encode(sentences)
-    print(embeddings)
+    # Fast responses with caching enabled (default)
+    response1 = await chat("What is Python?")
+    response2 = await chat("What is Python?")  # This will be cached!
+    
+    # Disable caching if needed
+    response3 = await chat("Tell me a random joke", use_cache=False)
+    
+    # Clean up resources when done (optional)
+    await cleanup_resources()
 
+import asyncio
 asyncio.run(main())
 ```
+
+**Performance Features:**
+- 🔄 **Response Caching**: Identical queries return instantly from cache (5-min TTL)
+- 🌐 **Connection Pooling**: Reuses HTTP connections for faster subsequent requests
+- ⚡ **Optimized Streaming**: 8KB buffer chunks for better throughput
+- 🎯 **Reduced Timeouts**: Faster failure detection and response times
 
 ---
 
@@ -191,8 +204,6 @@ except RuntimeError as e:
 
 - Python 3.9+
 - `httpx` – Async HTTP client
-- `sentence-transformers` – Text embedding models
-- `torch` – PyTorch backend for sentence-transformers
 
 ---
 

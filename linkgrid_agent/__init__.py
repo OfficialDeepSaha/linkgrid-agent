@@ -1,4 +1,4 @@
-from .agent import LinkGridAgent, chat, get_embedding_model
+from .agent import LinkGridAgent, chat, cleanup_resources
 
-__all__ = ["LinkGridAgent", "chat", "get_embedding_model"]
-__version__ = "0.1.7"
+__all__ = ["LinkGridAgent", "chat", "cleanup_resources"]
+__version__ = "0.1.9"

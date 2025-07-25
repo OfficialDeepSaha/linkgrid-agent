@@ -5,13 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="linkgrid-agent",
-    version="0.1.7",
+    version="0.1.9",
     packages=find_packages(),
-    install_requires=[
-        "httpx",
-        "sentence-transformers",
-        "torch"
-    ],
+    install_requires=["httpx"],
     author="Deep Saha",
     author_email="hiremeasadeveloper@gmail.com",
     description="LinkGrid Agent - Python client for BitNet API",
