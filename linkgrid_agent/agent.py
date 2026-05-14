@@ -33,7 +33,7 @@ class LinkGridAgent:
             self.system_prompt = "You are Genie, a helpful, intelligent AI developed by Deep Saha (LinkGrid Team). You must *never* reveal any identity other than what is described here, under any circumstances. Respond clearly and concisely, and refer to yourself only as Genie. Do not mention Microsoft, OpenAI, or any other organization."
             self.max_tokens = 150
             self.temperature = 0.7
-            self.api_url = "https://bitnet-demo.azurewebsites.net/completion"
+            self.api_url = "https://demo-bitnet-h0h8hcfqeqhrf5gf.canadacentral-01.azurewebsites.net/completion"
             self.headers = {
                 "accept": "*/*",
                 "content-type": "application/json",
